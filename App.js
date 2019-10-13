@@ -19,6 +19,7 @@ import * as ImagePicker from 'expo-image-picker';
 import Modal from 'react-native-modal';
 import MapView from 'react-native-maps';
 import * as firebase from 'firebase';
+import ImgToBase64 from 'react-native-image-base64';
 
 // Initialize Firebase
 const firebaseConfig = {
@@ -55,7 +56,7 @@ export default class App extends Component {
         longitudeDelta: 0.040142817690068,
       },
       latitude: 42.3,
-      longitude: 2.11,
+      longitude: 2.11
     };
   }
 
@@ -109,6 +110,9 @@ export default class App extends Component {
         .push().key;
       console.log('got here');
 
+      var uploadResponse = await this.uploadImage(result.uri);
+      var uploadResult = await uploadResponse.json();
+
       firebase
         .database()
         .ref()
@@ -121,13 +125,7 @@ export default class App extends Component {
           },
           title: 'Dirty',
           description: 'Dirty place',
-          image: result.uri,
-        });
-
-      this.uploadImage(result.uri, 'test')
-        .then(() => console.log('OK'))
-        .catch(error => {
-          console.log(error);
+          image: uploadResult.location,
         });
 
       Alert.alert(
@@ -137,15 +135,29 @@ export default class App extends Component {
     }
   };
 
-  uploadImage = async (uri, name) => {
-    console.log('GOT HERE');
-    const response = await fetch(uri);
-    const blob = await response.blob();
-    var ref = firebase
-      .storage()
-      .ref()
-      .child('images/' + name);
-    return ref.put(blob);
+  uploadImage = async uri => {
+    let apiUrl = 'https://file-upload-example-backend-dkhqoilqqn.now.sh/upload';
+    let uriParts = uri.split('.');
+    let fileType = uri[uri.length - 1];
+    console.log(uri);
+
+    let formData = new FormData();
+    formData.append('photo', {
+      uri,
+      name: 'photo.png',
+      type: 'image/png',
+    });
+
+    let options = {
+      method: 'POST',
+      body: formData,
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'multipart/form-data',
+      },
+    };
+
+    return fetch(apiUrl, options);
   };
 
   markerClick() {
@@ -183,8 +195,7 @@ export default class App extends Component {
               <Image
                 style={{ width: '100%', height: 200, resizeMode: 'stretch' }}
                 source={{
-                  uri:
-                    'https://cdn.abcotvs.com/dip/images/5006222_010219-kgo-trash-overflowing-park-img.jpg',
+                  uri: marker.image,
                 }}
               />
               <Button
@@ -197,7 +208,11 @@ export default class App extends Component {
                   borderRadius: 50,
                 }}
                 textStyle={{ fontSize: 18, color: '#FFFFFF' }}
-                onPress={() => this.share('https://cdn.abcotvs.com/dip/images/5006222_010219-kgo-trash-overflowing-park-img.jpg')}>
+                onPress={() =>
+                  this.share(
+                    marker.image
+                  )
+                }>
                 SHARE
               </Button>
               <Button
