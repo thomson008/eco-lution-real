@@ -1,306 +1,138 @@
+// import App from "./app/index";
+// export default App;
+
 import React, { Component } from 'react';
-import {
-  AppRegistry,
-  StyleSheet,
-  Text,
-  View,
-  ScrollView,
-  Animated,
-  Image,
-  Dimensions,
-  TouchableOpacity,
-  Alert,
-  Linking,
-  Platform,
-} from 'react-native';
-
-import Button from 'apsl-react-native-button';
-import * as ImagePicker from 'expo-image-picker';
-import Modal from 'react-native-modal';
-import MapView from 'react-native-maps';
+import { Platform, StyleSheet, Text, View, StatusBar, AppRegistry} from 'react-native';
 import * as firebase from 'firebase';
-import ImgToBase64 from 'react-native-image-base64';
+import { Container, Content, Header, Form, Input, Item, Button, Label } from 'native-base';
+import Home from './app/screens/Home';
+import LoginScreen from './app/screens/LoginScreen';
+import Profile from './app/screens/Profile';
+import {createStackNavigator} from 'react-navigation-stack';
+import { createSwitchNavigator, createAppContainer } from 'react-navigation';
+import { FontAwesome } from "react-native-vector-icons";
+import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
+import {SignedOut, SignedIn} from './app/router';
+import SignedInComponent from './app/router';
+console.disableYellowBox = true
 
-// Initialize Firebase
+
 const firebaseConfig = {
-  apiKey: 'AIzaSyB7LRNCqhyGMrOFPwJHRSKJVFnrCI4jNh8',
-  authDomain: 'ecolution-84527.firebaseapp.com',
-  databaseURL: 'https://ecolution-84527.firebaseio.com',
-  projectId: 'ecolution-84527',
-  storageBucket: 'ecolution-84527.appspot.com',
-  messagingSenderId: '570895753766',
-  appId: '1:570895753766:web:326ef9364433081adcfce7',
-  measurementId: 'G-V75DK1H8BT',
-};
+    apiKey:"AIzaSyB7LRNCqhyGMrOFPwJHRSKJVFnrCI4jNh8",
+    authDomain: "ecolution-84527.firebaseapp.com",
+    databaseURL: "ecolution-84527.firebaseio.com",
+    storageBucket: "ecolution-84527.appspot.com",
+    messagingSenderId: "570895753766"
+ };
 
-const { width, height } = Dimensions.get('window');
+ firebase.initializeApp(firebaseConfig);
 
-const CARD_HEIGHT = height / 4;
-const CARD_WIDTH = CARD_HEIGHT - 50;
+ export const MainNavigator = createStackNavigator({
+    LoginScreen: { screen: () => <LoginScreen/> },
+    SignedInComponent: {screen: SignedInComponent},
+    Home: {screen: Home},
+  });
+  
+const App = createAppContainer(MainNavigator);
 
-export default class App extends Component {
-  constructor(props) {
-    super(props);
+export default App;
 
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-    }
+// export default class App extends React.Component {
 
-    this.state = {
-      isModalVisible: false,
-      markers: [],
-      region: {
-        latitude: 41.388,
-        longitude: 2.113,
-        latitudeDelta: 0.04864195044303443,
-        longitudeDelta: 0.040142817690068,
-      },
-      latitude: 42.3,
-      longitude: 2.11
-    };
-  }
+//   constructor(props) {
+//     super(props)
 
-  componentDidMount(props) {
-    this.setupLocationListener();
-    navigator.geolocation.getCurrentPosition(
-      position => {
-        console.log('wokeeey');
-        console.log(position);
-        this.setState({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          error: null,
-        });
-        this.setState({
-          region: {
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            latitudeDelta: 0.04864195044303443,
-            longitudeDelta: 0.040142817690068,
-          },
-        });
-      },
-      error => this.setState({ error: error.message }),
-      { enableHighAccuracy: false, timeout: 200000, maximumAge: 1000 }
-    );
-  }
+//     this.state = ({
+//       email: 'edon.aliko@gmail.com',
+//       password: '123456'
+//     })
+//   }
 
-  setupLocationListener() {
-    firebase
-      .database()
-      .ref()
-      .child('locations')
-      .on('value', snapshot => {
-        var locationsArray = [];
-        for (const [key, value] of Object.entries(snapshot.val())) {
-          locationsArray.push(value);
-        }
-        this.setState({ markers: locationsArray });
-      });
-  }
+//   signUpUser = (email, password) => {
 
-  storeLocation = async () => {
-    let result = await ImagePicker.launchCameraAsync();
+//     try {
 
-    if (!result.cancelled) {
-      var key = firebase
-        .database()
-        .ref()
-        .child('locations')
-        .push().key;
-      console.log('got here');
+//       if (this.state.password.length < 6) {
+//         alert("Please enter atleast 6 characters")
+//         return;
+//       }
 
-      var uploadResponse = await this.uploadImage(result.uri);
-      var uploadResult = await uploadResponse.json();
+//       firebase.auth().createUserWithEmailAndPassword(email, password)
+//     }
+//     catch (error) {
+//       console.log(error.toString())
+//     }
+//   }
 
-      firebase
-        .database()
-        .ref()
-        .child('locations')
-        .child(key)
-        .set({
-          location: {
-            latitude: this.state.latitude,
-            longitude: this.state.longitude,
-          },
-          title: 'Dirty',
-          description: 'Dirty place',
-          image: uploadResult.location,
-        });
+//   loginUser = (email, password) => {
 
-      Alert.alert(
-        'Location added!',
-        'You have succesfully reported a dirty place.'
-      );
-    }
-  };
+//     try {
 
-  uploadImage = async uri => {
-    let apiUrl = 'https://file-upload-example-backend-dkhqoilqqn.now.sh/upload';
-    let uriParts = uri.split('.');
-    let fileType = uri[uri.length - 1];
-    console.log(uri);
+//       firebase.auth().signInWithEmailAndPassword(email, password).then((user) => {
+//         console.log(user)
+//         this.props.navigator.push({
+//             component: Home
+//         })
+//       })
+//     }
+//     catch (error) {
+//       console.log(error.toString())
+//     }
+//   }
 
-    let formData = new FormData();
-    formData.append('photo', {
-      uri,
-      name: 'photo.png',
-      type: 'image/png',
-    });
 
-    let options = {
-      method: 'POST',
-      body: formData,
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'multipart/form-data',
-      },
-    };
+//   render() {
+//     return (
+//       <Container style={styles.container}>
+//         <Form>
+//           <Item floatingLabel>
+//             <Label>Email</Label>
+//             <Input
+//               autoCorrect={false}
+//               autoCapitalize="none"
+//               onChangeText={(email) => this.setState({ email })}
+//             />
 
-    return fetch(apiUrl, options);
-  };
+//           </Item>
 
-  markerClick() {
-    this.setState({ isModalVisible: !this.state.isModalVisible });
-  }
+//           <Item floatingLabel>
+//             <Label>Password</Label>
+//             <Input
+//               secureTextEntry={true}
+//               autoCorrect={false}
+//               autoCapitalize="none"
+//               onChangeText={(password) => this.setState({ password })}
+//             />
+//           </Item>
 
-  share(imageURL) {
-    console.log(imageURL);
-    var link =
-      'https://www.facebook.com/sharer/sharer.php?u=' +
-      imageURL +
-      '%2F&amp;src=sdkpreparse';
-    console.log(link);
-    Linking.openURL(link);
-  }
+//           <Button style={{ marginTop: 10 }}
+//             full
+//             rounded
+//             success
+//             onPress={() => this.loginUser(this.state.email, this.state.password)}
+//           >
+//             <Text style={{ color: 'white' }}> Login</Text>
+//           </Button>
 
-  componentWillMount() {
-    this.index = 0;
-    this.animation = new Animated.Value(0);
-  }
+//           <Button style={{ marginTop: 10 }}
+//             full
+//             rounded
+//             primary
+//             onPress={() => this.signUpUser(this.state.email, this.state.password)}
+//           >
+//             <Text style={{ color: 'white' }}> Sign Up</Text>
+//           </Button>
+//         </Form>
+//       </Container>
+//     );
+//   }
+// }
 
-  renderMarkers() {
-    return this.state.markers.map((marker, index) => {
-      return (
-        <MapView.Marker
-          key={index}
-          coordinate={marker.location}
-          onPress={() => this.markerClick()}>
-          <View style={[styles.markerWrap]}>
-            <View style={[styles.ring]} />
-            <View style={styles.marker} />
-          </View>
-          <Modal style={styles.modal} isVisible={this.state.isModalVisible}>
-            <View>
-              <Image
-                style={{ width: '100%', height: 200, resizeMode: 'stretch' }}
-                source={{
-                  uri: marker.image,
-                }}
-              />
-              <Button
-                style={{
-                  backgroundColor: '#43a61f',
-                  borderColor: '#FFFFFF',
-                  marginTop: 30,
-                  marginHorizontal: 20,
-                  height: 70,
-                  borderRadius: 50,
-                }}
-                textStyle={{ fontSize: 18, color: '#FFFFFF' }}
-                onPress={() =>
-                  this.share(
-                    marker.image
-                  )
-                }>
-                SHARE
-              </Button>
-              <Button
-                style={{
-                  backgroundColor: '#991d29',
-                  borderColor: '#FFFFFF',
-                  marginTop: 5,
-                  marginHorizontal: 20,
-                  height: 70,
-                  borderRadius: 50,
-                }}
-                textStyle={{ fontSize: 18, color: '#FFFFFF' }}
-                onPress={() => this.setState({ isModalVisible: false })}>
-                CLOSE
-              </Button>
-            </View>
-          </Modal>
-        </MapView.Marker>
-      );
-    });
-  }
-  render() {
-    return (
-      <View style={styles.container}>
-        <MapView
-          ref={map => (this.map = map)}
-          initialRegion={this.state.region}
-          style={styles.map}
-          showsUserLocation>
-          {this.renderMarkers()}
-        </MapView>
-        <Button
-          style={{
-            backgroundColor: '#43a61f',
-            borderColor: '#FFFFFF',
-            marginTop: 30,
-            marginHorizontal: 20,
-            height: 70,
-            borderRadius: 50,
-          }}
-          onPress={() => this.storeLocation()}
-          textStyle={{ fontSize: 18, color: '#FFFFFF' }}>
-          ADD LOCATION
-        </Button>
-      </View>
-    );
-  }
-}
-
-const styles = StyleSheet.create({
-  modal: {
-    marginTop: 80,
-    marginBottom: 100,
-    padding: 10,
-    backgroundColor: '#FFF',
-    borderRadius: 20,
-    shadowColor: '#000',
-    shadowRadius: 5,
-    shadowOpacity: 0.3,
-    shadowOffset: { x: 2, y: -2 },
-    height: 0.2,
-    alignContent: 'center',
-  },
-
-  container: {
-    flex: 1,
-  },
-  map: {
-    height: '80%',
-  },
-
-  markerWrap: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  marker: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: 'rgba(200,0,0,0.5)',
-  },
-  ring: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: 'rgba(200,0,0,0.3)',
-    position: 'absolute',
-    borderWidth: 1,
-    borderColor: 'rgba(200,0,0,0.5)',
-  },
-});
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: '#fff',
+//     justifyContent: 'center',
+//     padding: 10
+//   },
+// });
