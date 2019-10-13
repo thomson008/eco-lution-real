@@ -1,11 +1,14 @@
-# Sample Snack app
-
-Open the `App.js` file to start writing some code. You can preview the changes directly on your phone or tablet by clicking the **Run** button or use the simulator by clicking **Tap to Play**. When you're done, click **Save** and share the link!
-
-When you're ready to see everything that Expo provides (or if you want to use your own editor) you can **Export** your project and use it with [expo-cli](https://docs.expo.io/versions/latest/introduction/installation.html).
-
-Projects created in Snack are publicly available, so you can easily share the link to this project via link, or embed it on a web page with the **Embed** button.
-
-If you're having problems, you can tweet to us [@expo](https://twitter.com/expo) or ask in our [forums](https://forums.expo.io).
-
-Snack is Open Source. You can find the code on the [GitHub repo](https://github.com/expo/snack-web).
+# Eco-lution
+## Rationale/Motivation
+In recent weeks there has been a noticeable surge of discussion and debate regarding climate change. This gain in momentum has led to a drastic increase in the political pressure the topic exerts, with more and more high level public figures being requisite to acknowledge the issue. As a group, we felt compelled to contribute to this increase in traction in the best way we know.... by coding! 
+Land pollution has a strong correlation with greenhouse gas concentrations and also decreases the overall trust within society. For those reasons we wanted to create a platform where enviornmentally concious people could convene and communicate to help decontaminate the communities they are a part of, and turn their passion for the enviornment into action. From there, Ecolution was born. 
+## What does it do?
+Eco-lution is a mobile app, compatible with both IOS and Android devices. Users create an account by using their email and setting a password. Users are then presented with a map, featuring red dots of varying sizes, relating to the severity of the visual pollution in those areas. The app can access the users position in the map, as well as gain access to the camera of whatever mobile device they are using(with the permission of the user of course). Users can then use this to take pictures and report contaminated areas, using their location as the coordinates of where the pollution can be found, adding another red dot, or increasing the severity of a current one. In addition, users can turn their reports into facebook posts directly from the app, in order to convince their friends and family to be more aware of the issue, and perhaps even motivating them to download the app. Other users will then see these red dots,  use the maps to navigate to the source of the pollution, and organize to clean it.
+## How we built it
+This app was predominantly created using React-Native and Firebase.
+## Challenges we ran into
+This years Hack UPC was quite effective at dragging us outside of our comfort zone. For all of us it was the first time we had gone outside the UK for a hackathon. Another issue was the duration of the conference. Our team was more used to 24 hour hacking times, and that 12 hour difference really had a strong effect as far as our ability to keep the project at the right scope, and keep ourselves awake and productive throughout. The most problematic issue we had was learning React-Native, JavaScript, and Firebase basically from scratch(for most of us).
+## What we learned?
+Despite the many hackathons the team had been a part of, we agreed that this was the one in which we learned the most. Most of us had little experience with Javascript, and all of us were unfamiliar with Firebase and React-Native. This led to an intense but rewarding learning curve, where we eventually developed the competencey to build a fully integrated app using tools that were previously foreign to us. Additionally we all developed our knowledge in API and SDK manipulation in order to get a lot of the functionality of the app going.
+## What is next for eco-lution
+As is the case in most hackathon projects, our product is far from polished or fully realized. We definetly achieved the more realistic goals a 36 hour timeframe would allow, and are very satisfied with the product, but that doesn't mean it is finished. Some of the ideas we were looking at, other then an esthetic revamp and optimizing load times, is to implement the ability for public Facebook events to be posted at these red dots, to galvanize people in the vacinity to go and clean together, working as a community for a common and desirable goal. Furthermore, we have discussed the idea of a social credit score, were users can post 'after' pictures of their cleaning endeavours, and then some sort of AI implementation could calculate the efforts of that person by comparing the 'before' and 'after' photo, and then assigning some sort of score. This score could be used to form leaderboards, give awards, and even involve local municipalities in rewarding their most ecological of citizens.
