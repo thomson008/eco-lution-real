@@ -1,0 +1,8 @@
+# eco-lution-real
+React Native + Firebase application made for HackUPC 2019. 
+
+## What does it do?
+Ecolution is a mobile app built with React Native, compatible with both iOS and Android devices. Users create an account by using their email and setting a password. Users are then presented with a feed of posts from nearby users and a map, featuring red dots of varying sizes, relating to the severity of the visual pollution in those areas. The app can access the users position in the map, as well as gain access to the camera of whatever mobile device they are using (with the permission of the user of course). Users can then use this to take pictures and report contaminated areas, using their location as the coordinates of where the pollution can be found, adding another red dot, or increasing the severity of a current one. In addition, users can turn their reports into facebook posts directly from the app, in order to convince their friends and family to be more aware of the issue through some real-time data visualization, and perhaps even motivating them to download the app. Other users will then see these red dots, use the maps to navigate to the source of the pollution, and organize to clean it together.
+
+## How we built it
+This app was predominantly created using React-Native and Firebase. The frontend was done with React, used a variety of APIs to implement a mobile application, with several different interfaces/tabs. We used facebook's sharing API to create public posts with information from the app. The backend was handled with Firebase and React-Native. Firebase is a non-relational database system, that was used to dynamically store data regarding events on the map, such as the afformentioned red dots.
